@@ -1,0 +1,29 @@
+name: Deploy Frontend
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Check Docker setup on runner
+        run: |
+          echo "Docker version:"
+          docker --version
+          echo
+          echo "Docker Compose version:"
+          docker compose version
+          echo
+          echo "Docker info:"
+          docker info
+
+      - name: Build docker image
+        run: docker build -t kumarswaraj/docker-react -f Dockerfile.dev .
+
+      - name: Run tests
+        run: docker run -e CI=true kumarswaraj/docker-react npm test
